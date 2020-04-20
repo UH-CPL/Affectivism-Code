@@ -28,4 +28,13 @@ install.packages('PackageName')
                * Keep only data for 1985-2018
                * Run the regression model
                * Draw the line plot for funding amount and Regression plot on Budget Portion and save as NIMH_Plot.png
+
+3. Penetration of affectivism in key areas of Psychology since 1980
+     - yearlyPub_ADMP_with_Emotion.rmd
+          * The script does the following things:
+               * Read all the timeline files related to Attention, Decision Making, Memory, and Perception
+               * Keep only data for 1980-2018
+               * Calculate the EM percentages
+               * Run the regression models
+               * Draw the Yearly publication plots, and Regression Plots for Attention, Decision Making, Memory, and Perception. Finally, save as ADMPwEmotion.png file 
                
