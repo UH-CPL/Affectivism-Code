@@ -15,7 +15,7 @@ install.packages('PackageName')
 * Save the data files in Data folder 
 
 ## Script Set
-1. Growth of the Emotion(EM) publications
+1. **Growth of the Emotion(EM) publications**
      - yearlyPublicationPubMed.rmd
           * The script does the following things:
             * Read the timeline_Emotions.csv and timeline_behavior.csv files
@@ -24,7 +24,7 @@ install.packages('PackageName')
             * Run the regression model
             * Draw the Yearly Publication barplot and Regression plot and save as pubMedyearlyPlot.png
 
-2. Budget of NIMH on Affective research
+2. **Budget of NIMH on Affective research**
      - funding_NIMH_plot.rmd
           * The script does the following things:
                * Read the NIMH_emoVSnonemo.csv file
@@ -32,7 +32,7 @@ install.packages('PackageName')
                * Run the regression model
                * Draw the line plot for funding amount and Regression plot on Budget Portion and save as NIMH_Plot.png
 
-3. Penetration of affectivism in key areas of Psychology since 1980
+3. **Penetration of affectivism in key areas of Psychology since 1980**
      - yearlyPub_ADMP_with_Emotion.rmd
           * The script does the following things:
                * Read all the timeline files related to Attention, Decision Making, Memory, and Perception
@@ -41,7 +41,7 @@ install.packages('PackageName')
                * Run the regression models
                * Draw the Yearly publication plots, and Regression Plots for Attention, Decision Making, Memory, and Perception. Finally, save as ADMPwEmotion.png file 
                
-4. Citation impact evolution of the EM group
+4. **Citation impact evolution of the EM group**
      - citation_analysis_ratio.rmd
           * The script does the following things:
                * Read the publication_emotion.csv and publication_behavior.csv files
