@@ -10,3 +10,13 @@ Packages are available on CRAN and can be installed using a simple call to ```in
 ```
 install.packages('PackageName')
 ```
+
+## Script Set
+1. Growth of the Emotion(EM) publications:
+     - yearlyPublicationPubMed.rmd
+          * The script does the following things:
+            * Read the timeline_Emotions.csv and timeline_behavior.csv files
+            * Keep only data for 1980-2018
+            * Calculate the EM percentages
+            * Run the regression model
+            * Draw the Yearly Publication barplot and Regression plot and save as pubMedyearlyPlot.png
