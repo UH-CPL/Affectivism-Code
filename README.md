@@ -38,3 +38,13 @@ install.packages('PackageName')
                * Run the regression models
                * Draw the Yearly publication plots, and Regression Plots for Attention, Decision Making, Memory, and Perception. Finally, save as ADMPwEmotion.png file 
                
+4. Citation impact evolution of the EM group
+     - citation_analysis_ratio.rmd
+          * The script does the following things:
+               * Read the publication_emotion.csv and publication_behavior.csv files
+               * Keep only data for 1989-2018
+               * Calculate the ratio value (![formula](https://render.githubusercontent.com/render/math?math=r_{c})), and Average ratio value (![formula](https://render.githubusercontent.com/render/math?math=\bar{r_{c}}))
+               * Run the bootstrap for 1M
+               * Draw the ![formula](https://render.githubusercontent.com/render/math?math=r_{c}) plot with confidence_interval 90%, 95%, and 99% and save as rc_ratio_plot.png
+               * Calculate the Percentage change ![formula](https://render.githubusercontent.com/render/math?math=\Delta{C}) from ![formula](https://render.githubusercontent.com/render/math?math=r_{c})
+               
