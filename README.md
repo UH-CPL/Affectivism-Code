@@ -10,6 +10,9 @@ Packages are available on CRAN and can be installed using a simple call to ```in
 ```
 install.packages('PackageName')
 ```
+#### Dataset requirement:
+* Download the dataset from https://osf.io/2ktnv/
+* Save the data files in Data folder 
 
 ## Script Set
 1. Growth of the Emotion(EM) publications
