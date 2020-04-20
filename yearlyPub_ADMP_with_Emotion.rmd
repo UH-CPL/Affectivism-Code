@@ -1,0 +1,368 @@
+---
+title: "yearly_pub_ADMP_with_Emotions"
+# author: "Emtiaz"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(zoo)
+library(ggpubr)
+library(latex2exp)
+
+```
+
+### Read all files and set the data types
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+df_memory_emotion = read.csv("Data/timeline_memory_emotion.csv",stringsAsFactors = FALSE)
+df_memory = read.csv("Data/timeline_memory.csv",stringsAsFactors = FALSE)
+
+df_attention_emotion = read.csv("Data/timeline_attention_emotion.csv",stringsAsFactors = FALSE)
+df_attention = read.csv("Data/timeline_attention.csv",stringsAsFactors = FALSE)
+
+df_perception_emotion = read.csv("Data/timeline_perception_emotion.csv",stringsAsFactors = FALSE)
+df_perception = read.csv("Data/timeline_perception.csv",stringsAsFactors = FALSE)
+
+df_decision_emotion = read.csv("Data/timeline_decision_emotion.csv",stringsAsFactors = FALSE)
+df_decision = read.csv("Data/timeline_decision.csv",stringsAsFactors = FALSE)
+
+
+df_memory_emotion$year = as.integer(df_memory_emotion$year)
+df_memory_emotion$count = as.integer(df_memory_emotion$count)
+df_memory$year = as.integer(df_memory$year)
+df_memory$count = as.integer(df_memory$count)
+
+df_attention_emotion$year = as.integer(df_attention_emotion$year)
+df_attention_emotion$count = as.integer(df_attention_emotion$count)
+df_attention$year = as.integer(df_attention$year)
+df_attention$count = as.integer(df_attention$count)
+
+df_perception_emotion$year = as.integer(df_perception_emotion$year)
+df_perception_emotion$count = as.integer(df_perception_emotion$count)
+df_perception$year = as.integer(df_perception$year)
+df_perception$count = as.integer(df_perception$count)
+
+df_decision_emotion$year = as.integer(df_decision_emotion$year)
+df_decision_emotion$count = as.integer(df_decision_emotion$count)
+df_decision$year = as.integer(df_decision$year)
+df_decision$count = as.integer(df_decision$count)
+
+
+df_memory_emotion
+df_memory
+df_attention_emotion
+df_attention
+df_perception_emotion
+df_perception
+df_decision_emotion
+df_decision
+
+
+
+```
+
+### Filter year from 1980 to 2018
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+df_memory_emotion = df_memory_emotion %>% filter(year >= 1980 & year<=2018)
+df_memory_emotion
+df_memory = df_memory %>% filter(year >= 1980 & year<=2018)
+df_memory
+
+df_attention_emotion = df_attention_emotion %>% filter(year >= 1980 & year<=2018)
+df_attention_emotion
+df_attention = df_attention %>% filter(year >= 1980 & year<=2018)
+df_attention
+
+df_perception_emotion = df_perception_emotion %>% filter(year >= 1980 & year<=2018)
+df_perception_emotion
+df_perception = df_perception %>% filter(year >= 1980 & year<=2018)
+df_perception
+
+df_decision_emotion = df_decision_emotion %>% filter(year >= 1980 & year<=2018)
+df_decision_emotion
+df_decision = df_decision %>% filter(year >= 1980 & year<=2018)
+df_decision
+
+```
+
+### Rename column names and join them together
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+colnames(df_memory_emotion) <- c('year', 'emotion_count')
+emotion_memory_yearly = df_memory_emotion %>% merge(df_memory, by ='year')
+emotion_memory_yearly
+
+colnames(df_attention_emotion) <- c('year', 'emotion_count')
+emotion_attention_yearly = df_attention_emotion %>% merge(df_attention, by ='year')
+emotion_attention_yearly
+
+colnames(df_perception_emotion) <- c('year', 'emotion_count')
+emotion_perception_yearly = df_perception_emotion %>% merge(df_perception, by ='year')
+emotion_perception_yearly
+
+colnames(df_decision_emotion) <- c('year', 'emotion_count')
+emotion_decision_yearly = df_decision_emotion %>% merge(df_decision, by ='year')
+emotion_decision_yearly
+
+```
+
+### Calculate the percentages
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+emotion_memory_yearly  = emotion_memory_yearly  %>% mutate(emoPercent = emotion_count * 100 / count)
+emotion_memory_yearly
+
+emotion_attention_yearly  = emotion_attention_yearly  %>% mutate(emoPercent = emotion_count * 100 / count)
+emotion_attention_yearly
+
+emotion_perception_yearly  = emotion_perception_yearly  %>% mutate(emoPercent = emotion_count * 100 / count)
+emotion_perception_yearly
+
+emotion_decision_yearly  = emotion_decision_yearly  %>% mutate(emoPercent = emotion_count * 100 / count)
+emotion_decision_yearly
+
+
+```
+
+
+### Draw the Yearly publication plot for Attention, Decision, Memory, and Perception
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+p_emo_memory = ggplot(emotion_memory_yearly , aes(x=year, y=emotion_count)) +
+  geom_bar(stat = "identity", fill="dodgerblue", alpha= 0.8) +
+  coord_cartesian(xlim = c(1980,2018)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4)) +
+  # scale_y_continuous(breaks = seq(0,8000,by=2000), limits = c(0,8000)) +
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=14, face="bold"),
+        axis.title=element_text(size=16,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0))) +
+  labs(x="", y="# Publications - MeSH: M & E", title = "")
+  
+
+
+p_emo_attention = ggplot(emotion_attention_yearly , aes(x=year, y=emotion_count)) +
+  geom_bar(stat = "identity", fill="dodgerblue", alpha= 0.8) +
+  coord_cartesian(xlim = c(1980,2018)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4)) +
+  # scale_y_continuous(breaks = seq(0,8000,by=2000), limits = c(0,8000)) +
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=14, face="bold"),
+        axis.title=element_text(size=16,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0))) +
+  labs(x="", y="# Publications - MeSH: A & E", title = "")
+  
+
+
+
+p_emo_perception = ggplot(emotion_perception_yearly , aes(x=year, y=emotion_count)) +
+  geom_bar(stat = "identity", fill="dodgerblue", alpha= 0.8) +
+  coord_cartesian(xlim = c(1980,2018)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4)) +
+  # scale_y_continuous(breaks = seq(0,8000,by=2000), limits = c(0,8000)) +
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=14, face="bold"),
+        axis.title=element_text(size=16,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0))) +
+  labs(x="", y="# Publications - MeSH: P & E", title = "")
+  
+
+
+p_emo_decision = ggplot(emotion_decision_yearly , aes(x=year, y=emotion_count)) +
+  geom_bar(stat = "identity", fill="dodgerblue", alpha= 0.8) +
+  coord_cartesian(xlim = c(1980,2018)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4)) +
+  # scale_y_continuous(breaks = seq(0,8000,by=2000), limits = c(0,8000)) +
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=14, face="bold"),
+        axis.title=element_text(size=16,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0))) +
+  labs(x="", y="# Publications - MeSH: DM & E", title = "")
+  
+p_emo_memory
+p_emo_attention
+p_emo_perception
+p_emo_decision
+
+
+```
+
+#### Regression on PubMed data
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+model_mem_emo = lm(emoPercent ~ year, data = emotion_memory_yearly)
+summary(model_mem_emo)
+
+model_att_emo = lm(emoPercent ~ year, data = emotion_attention_yearly)
+summary(model_att_emo)
+
+model_per_emo = lm(emoPercent ~ year, data = emotion_perception_yearly)
+summary(model_per_emo)
+
+model_dec_emo = lm(emoPercent ~ year, data = emotion_decision_yearly)
+summary(model_dec_emo)
+
+
+## get the p value
+pStars_mem_emo <- summary(model_mem_emo)$coefficients[,"Pr(>|t|)"][[2]]
+pStars_mem_emo = format(round(pStars_mem_emo, 3), nsmall = 3)
+pStars_mem_emo
+
+pStars_att_emo <- summary(model_att_emo)$coefficients[,"Pr(>|t|)"][[2]]
+pStars_att_emo = format(round(pStars_att_emo, 3), nsmall = 3)
+pStars_att_emo
+
+pStars_per_emo <- summary(model_per_emo)$coefficients[,"Pr(>|t|)"][[2]]
+pStars_per_emo = format(round(pStars_per_emo, 3), nsmall = 3)
+pStars_per_emo
+
+pStars_dec_emo <- summary(model_dec_emo)$coefficients[,"Pr(>|t|)"][[2]]
+pStars_dec_emo = format(round(pStars_dec_emo, 3), nsmall = 3)
+pStars_dec_emo
+
+## get the r/estimate value
+r_val_mem_emo <- summary(model_mem_emo)$adj.r.squared 
+r_val_mem_emo = format(round(r_val_mem_emo, 3), nsmall = 3)
+r_val_mem_emo
+
+r_val_att_emo <- summary(model_att_emo)$adj.r.squared 
+r_val_att_emo = format(round(r_val_att_emo, 3), nsmall = 3)
+r_val_att_emo
+
+r_val_per_emo <- summary(model_per_emo)$adj.r.squared 
+r_val_per_emo = format(round(r_val_per_emo, 3), nsmall = 3)
+r_val_per_emo
+
+r_val_dec_emo <- summary(model_dec_emo)$adj.r.squared 
+r_val_dec_emo = format(round(r_val_dec_emo, 3), nsmall = 3)
+r_val_dec_emo
+
+```
+
+
+#### Draw Regfression Plot
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+
+annotation_emo_mem = paste0("$\\textit{p < 0.001}$, $\\textit{r = ", r_val_mem_emo,"}$")
+annotation_emo_per = paste0("$\\textit{p < 0.001}$, $\\textit{r = ",  r_val_per_emo,"}$")
+annotation_emo_att = paste0("$\\textit{p < 0.001}$, $\\textit{r = ",  r_val_att_emo,"}$")
+annotation_emo_dec = paste0("$\\textit{p < 0.001}$, $\\textit{r = ",  r_val_dec_emo,"}$")
+
+
+
+
+g_emo_mem = ggplot(emotion_memory_yearly, aes(x=year, y=emoPercent)) +
+  geom_point(color = "red")+
+  geom_smooth(method = "lm", se= FALSE, col='black')+
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1980,2018))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=14, face="bold"),
+        axis.title=element_text(size=16,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = unit(c(0.3, 0.5, 0.3, 0.5), "cm"))+
+  labs(x="", y=expression(bold("% Publications - MeSH: M & E "~italic("in")~" Memory")), title = "")+
+  annotate("text", x = 2014, y = 12, label = TeX(annotation_emo_mem), fontface = 'italic', size=6)+
+  scale_y_continuous(breaks = seq(0,12, by = 2), limits = c(0,12))
+
+
+
+g_emo_att = ggplot(emotion_attention_yearly, aes(x=year, y=emoPercent)) +
+  geom_point(color = "red")+
+  geom_smooth(method = "lm", se= FALSE, col='black')+
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1980,2018))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=14, face="bold"),
+        axis.title=element_text(size=16,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = unit(c(0.3, 0.5, 0.3, 0.5), "cm"))+
+  labs(x="", y=expression(bold("% Publications - MeSH: A & E "~italic("in")~" Attention")), title = "")+
+  annotate("text", x = 2014, y = 12, label = TeX(annotation_emo_att), fontface = 'italic', size=6)+
+  scale_y_continuous(breaks = seq(0,12, by = 2), limits = c(0,12))
+
+
+
+g_emo_per = ggplot(emotion_perception_yearly, aes(x=year, y=emoPercent)) +
+  geom_point(color = "red")+
+  geom_smooth(method = "lm", se= FALSE, col='black')+
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1980,2018))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=14, face="bold"),
+        axis.title=element_text(size=16,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = unit(c(0.3, 0.5, 0.3, 0.5), "cm"))+
+  labs(x="", y=expression(bold("% Publications - MeSH: P & E "~italic("in")~" Perception")), title = "")+
+  annotate("text", x = 2014, y = 12, label = TeX(annotation_emo_per), fontface = 'italic', size=6)+
+  scale_y_continuous(breaks = seq(0,12, by = 2), limits = c(0,12))
+
+
+
+g_emo_dec = ggplot(emotion_decision_yearly, aes(x=year, y=emoPercent)) +
+  geom_point(color = "red")+
+  geom_smooth(method = "lm", se= FALSE, col='black')+
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1980,2018))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=14, face="bold"),
+        axis.title=element_text(size=16,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = unit(c(0.3, 0.5, 0.3, 0.5), "cm"))+
+  labs(x="", y=expression(bold("% Publications - MeSH: DM & E "~italic("in")~" Decision Making")), title = "")+
+  annotate("text", x = 2014, y = 12, label = TeX(annotation_emo_dec), fontface = 'italic', size=6)+
+  scale_y_continuous(breaks = seq(0,12, by = 2), limits = c(0,12))
+
+g_emo_mem
+g_emo_att
+g_emo_per
+g_emo_dec
+
+```
+
+
+### Save the plot
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+g_final <- ggarrange(p_emo_attention, g_emo_att, p_emo_decision, g_emo_dec, p_emo_memory, g_emo_mem, p_emo_perception, g_emo_per,
+                     labels = c("a1", "b1", "a2", "b2", "a3", "b3", "a4", "b4"),
+                     ncol = 2, nrow = 4,
+                     font.label = list(size=19))
+
+
+print(g_final)
+ggsave(paste0("Plots/ADMPwEmotion.png"), g_final, height = 27, width = 20)
+```
+
+
+
+
+
