@@ -1,0 +1,425 @@
+---
+title: "yearly_publication_PubMed"
+# author: "Emtiaz"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(zoo)
+library(ggpubr)
+library(latex2exp)
+library(gg.gap)
+```
+
+# NIMH funding
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+df_NIMH = read.csv("Data/NIMH_emoVSnonemo.csv",stringsAsFactors = FALSE)
+df_NIMH
+```
+
+#### select specific columns; convert data types
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+df_NIMH = df_NIMH %>% select(year, yFUND_emo_2018, fundPercentage)
+
+df_NIMH$year = as.integer(df_NIMH$year)
+df_NIMH$yFUND_emo_2018 = as.double(df_NIMH$yFUND_emo_2018)
+df_NIMH$fundPercentage = as.double(df_NIMH$fundPercentage)
+
+df_NIMH
+```
+#### Filter NIMH year from 1985-2018;
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+df_NIMH = df_NIMH %>% filter(year >= 1985 & year <= 2018)
+df_NIMH
+```
+#### Draw bar plot
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+g_fund_bar = ggplot(df_NIMH, aes(x=year, y=fundPercentage)) +
+  geom_bar(stat = "identity", fill="darkgray", alpha= 0.7) +
+  coord_cartesian(xlim = c(1984,2018)) +
+  scale_x_continuous(breaks = seq(1985,2018,by=3), limits = c(1984,2019)) +
+  scale_y_continuous(breaks = seq(0,15, by = 3), limits = c(0,15), labels=function(x) paste0(x," %")) +
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=17, face="bold"),
+        axis.title=element_text(size=18,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = margin(t=0.8, l=1.5, r=1, b=0.3, unit = "cm"),
+        plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
+  labs(x="", y="NIMH budget share", title = "Affective research funding")
+
+
+g_fund_bar
+```
+
+## Yearly publication
+
+
+### Read all files and set the data types
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+df_emotion_pubmed = read.csv("Data/timeline_Emotions.csv",stringsAsFactors = FALSE)
+df_behavior_pubmed = read.csv("Data/timeline_behavior.csv",stringsAsFactors = FALSE)
+
+df_emotion_pubmed$year = as.integer(df_emotion_pubmed$year)
+df_emotion_pubmed$count = as.integer(df_emotion_pubmed$count)
+df_emotion_pubmed
+
+df_behavior_pubmed$year = as.integer(df_behavior_pubmed$year)
+df_behavior_pubmed$count = as.integer(df_behavior_pubmed$count)
+df_behavior_pubmed
+
+```
+
+### Filter year from 1980 to 2018
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+df_emotion_pubmed = df_emotion_pubmed %>% filter(year >= 1980 & year<=2018)
+df_emotion_pubmed
+
+df_behavior_pubmed = df_behavior_pubmed %>% filter(year >= 1980 & year<=2018)
+df_behavior_pubmed
+
+
+
+```
+
+### Rename column names and join them together
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+colnames(df_emotion_pubmed) <- c('year', 'emotion_count')
+
+df_yearly = df_emotion_pubmed %>% merge(df_behavior_pubmed, by ='year')
+df_yearly
+```
+
+### Calculate the percentages
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+df_yearly = df_yearly %>% mutate(emoPercent = emotion_count * 100 / count)
+df_yearly
+```
+# Draw bar plot
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+g_pub_bar = ggplot(df_yearly, aes(x=year, y=emoPercent)) +
+  geom_bar(stat = "identity", fill="black", alpha= 0.8) +
+  coord_cartesian(xlim = c(1979,2019)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1979,2019))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=17, face="bold"),
+        axis.title=element_text(size=18,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = margin(t=0.5, l=1.5, r=1, b=0.5, unit = "cm"),
+        plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
+  labs(x="", y="Publication volume share", title = "Affective content in 'Behaviour' research")+
+  scale_y_continuous(breaks = seq(0,10, by = 2), limits = c(0,10), labels=function(x) paste0(x," %"))
+
+g_pub_bar
+```
+
+### generate combined plots
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+g_fund_pub_bar <- ggarrange(g_fund_bar, g_pub_bar,
+                     ncol = 1, nrow = 2,
+                     labels = c("b", "c"),
+                     font.label=list(color="black",size=30, face = "bold")) + border(color = "black", size = 2, linetype = NULL)
+
+
+
+g_fund_pub_bar
+
+```
+
+
+
+# Attention, Decision, Memory, Perception publication details
+
+### Read all files and set the data types
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+df_memory_emotion = read.csv("Data/timeline_memory_emotion.csv",stringsAsFactors = FALSE)
+df_memory = read.csv("Data/timeline_memory.csv",stringsAsFactors = FALSE)
+
+df_attention_emotion = read.csv("Data/timeline_attention_emotion.csv",stringsAsFactors = FALSE)
+df_attention = read.csv("Data/timeline_attention.csv",stringsAsFactors = FALSE)
+
+df_perception_emotion = read.csv("Data/timeline_perception_emotion.csv",stringsAsFactors = FALSE)
+df_perception = read.csv("Data/timeline_perception.csv",stringsAsFactors = FALSE)
+
+df_decision_emotion = read.csv("Data/timeline_decision_emotion.csv",stringsAsFactors = FALSE)
+df_decision = read.csv("Data/timeline_decision.csv",stringsAsFactors = FALSE)
+
+
+df_memory_emotion$year = as.integer(df_memory_emotion$year)
+df_memory_emotion$count = as.integer(df_memory_emotion$count)
+df_memory$year = as.integer(df_memory$year)
+df_memory$count = as.integer(df_memory$count)
+
+df_attention_emotion$year = as.integer(df_attention_emotion$year)
+df_attention_emotion$count = as.integer(df_attention_emotion$count)
+df_attention$year = as.integer(df_attention$year)
+df_attention$count = as.integer(df_attention$count)
+
+df_perception_emotion$year = as.integer(df_perception_emotion$year)
+df_perception_emotion$count = as.integer(df_perception_emotion$count)
+df_perception$year = as.integer(df_perception$year)
+df_perception$count = as.integer(df_perception$count)
+
+df_decision_emotion$year = as.integer(df_decision_emotion$year)
+df_decision_emotion$count = as.integer(df_decision_emotion$count)
+df_decision$year = as.integer(df_decision$year)
+df_decision$count = as.integer(df_decision$count)
+
+
+df_memory_emotion
+df_memory
+df_attention_emotion
+df_attention
+df_perception_emotion
+df_perception
+df_decision_emotion
+df_decision
+
+
+
+```
+
+
+### Filter year from 1980 to 2018
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+df_memory_emotion = df_memory_emotion %>% filter(year >= 1980 & year<=2018)
+df_memory_emotion
+df_memory = df_memory %>% filter(year >= 1980 & year<=2018)
+df_memory
+
+df_attention_emotion = df_attention_emotion %>% filter(year >= 1980 & year<=2018)
+df_attention_emotion
+df_attention = df_attention %>% filter(year >= 1980 & year<=2018)
+df_attention
+
+df_perception_emotion = df_perception_emotion %>% filter(year >= 1980 & year<=2018)
+df_perception_emotion
+df_perception = df_perception %>% filter(year >= 1980 & year<=2018)
+df_perception
+
+df_decision_emotion = df_decision_emotion %>% filter(year >= 1980 & year<=2018)
+df_decision_emotion
+df_decision = df_decision %>% filter(year >= 1980 & year<=2018)
+df_decision
+
+```
+
+### Rename column names and join them together
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+colnames(df_memory_emotion) <- c('year', 'emotion_count')
+emotion_memory_yearly = df_memory_emotion %>% merge(df_memory, by ='year')
+emotion_memory_yearly
+
+colnames(df_attention_emotion) <- c('year', 'emotion_count')
+emotion_attention_yearly = df_attention_emotion %>% merge(df_attention, by ='year')
+emotion_attention_yearly
+
+colnames(df_perception_emotion) <- c('year', 'emotion_count')
+emotion_perception_yearly = df_perception_emotion %>% merge(df_perception, by ='year')
+emotion_perception_yearly
+
+colnames(df_decision_emotion) <- c('year', 'emotion_count')
+emotion_decision_yearly = df_decision_emotion %>% merge(df_decision, by ='year')
+emotion_decision_yearly
+
+```
+
+### Calculate the percentages
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+emotion_memory_yearly  = emotion_memory_yearly  %>% mutate(emoPercent = emotion_count * 100 / count)
+emotion_memory_yearly
+
+emotion_attention_yearly  = emotion_attention_yearly  %>% mutate(emoPercent = emotion_count * 100 / count)
+emotion_attention_yearly
+
+emotion_perception_yearly  = emotion_perception_yearly  %>% mutate(emoPercent = emotion_count * 100 / count)
+emotion_perception_yearly
+
+emotion_decision_yearly  = emotion_decision_yearly  %>% mutate(emoPercent = emotion_count * 100 / count)
+emotion_decision_yearly
+
+
+```
+
+#### Draw bar Plot
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+
+
+
+g_emo_mem = ggplot(emotion_memory_yearly, aes(x=year, y=emoPercent)) +
+  geom_bar(stat = "identity", fill="cyan2", alpha= 0.8) +
+  coord_cartesian(xlim = c(1979,2019)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1979,2019))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=17, face="bold"),
+        axis.title=element_text(size=18,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = margin(t=0.5, l=1.5, r=1, b=0.2, unit = "cm"),
+        plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
+  labs(x="", y=expression(bold("Publication volume share")), title = "Affective content in 'Memory' research")+
+  scale_y_continuous(breaks = seq(0,12, by = 4), limits = c(0,12), labels=function(x) paste0(x," %"))
+
+
+
+g_emo_att = ggplot(emotion_attention_yearly, aes(x=year, y=emoPercent)) +
+  geom_bar(stat = "identity", fill="palevioletred1", alpha= 0.8) +
+  coord_cartesian(xlim = c(1979,2019)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1979,2019))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=17, face="bold"),
+        axis.title=element_text(size=18,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = margin(t=0.5, l=1.5, r=1, b=0.2, unit = "cm"),
+        plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
+  labs(x="", y=expression(bold("Publication volume share")), title = "Affective content in 'Attention' research")+
+  scale_y_continuous(breaks = seq(0,12, by = 4), limits = c(0,12), labels=function(x) paste0(x," %"))
+
+
+
+g_emo_per = ggplot(emotion_perception_yearly, aes(x=year, y=emoPercent)) +
+  geom_bar(stat = "identity", fill="orange", alpha= 0.8) +
+  coord_cartesian(xlim = c(1979,2019)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1979,2019))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=17, face="bold"),
+        axis.title=element_text(size=18,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = margin(t=0.4, l=1.5, r=1, b=0.3, unit = "cm"),
+        plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
+  labs(x="", y=expression(bold("Publication volume share")), title = "Affective content in 'Perception' research")+
+  scale_y_continuous(breaks = seq(0,7, by = 2), limits = c(0,7), labels=function(x) paste0("  ", x," %"))
+
+
+
+g_emo_dec = ggplot(emotion_decision_yearly, aes(x=year, y=emoPercent)) +
+  geom_bar(stat = "identity", fill="green", alpha= 0.8) +
+  coord_cartesian(xlim = c(1979,2019)) +
+  scale_x_continuous(breaks = seq(1980,2018,by=4), limits = c(1979,2019))+
+  theme_bw()+
+  theme(panel.grid.major = element_blank(),
+        axis.text=element_text(size=17, face="bold"),
+        axis.title=element_text(size=18,face="bold"),
+        legend.position = "none",
+        axis.title.y = element_text(margin=margin(t=0,r=10,b=0,l=0)),
+        axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
+        plot.margin = margin(t=0.4, l=1.5, r=1, b=0.3, unit = "cm"),
+        plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
+  labs(x="", y=expression(bold("Publication volume share")), title = "Affective content in 'Decision-making' research")+
+  scale_y_continuous(breaks = seq(0,7, by = 2), limits = c(0,7), labels=function(x) paste0("  ", x," %"))
+
+g_emo_mem
+g_emo_att
+g_emo_per
+g_emo_dec
+
+```
+
+### combine  plots
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+g_mem_att_dec_per <- ggarrange(g_emo_mem, g_emo_att, g_emo_per, g_emo_dec,
+                     labels = c("d", "e", "f", "g"),
+                     ncol = 2, nrow = 2,
+                     font.label=list(color="black",size=30, face = "bold"))  + border(color = "black", size = 2, linetype = NULL)
+
+
+
+g_mem_att_dec_per
+```
+
+
+
+### combine  plots full
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+# g_full <- ggarrange(g_top_part, g_mem_att_dec_per,
+#                      labels = c("", "c"),
+#                      ncol = 1, nrow = 2,
+#                      font.label = list(size=19))
+# 
+# 
+# g_full
+# ggsave(paste0("Plots/full.png"), g_full, height = 17, width = 26)
+
+library(ggpubr)
+library(png)
+library(jpeg)
+
+img1 <- readJPEG("Plots/conceptual.jpg")
+# img1 <- readPNG("Plots/conceptual.png")
+
+im_A <- ggplot() + 
+    background_image(img1) + theme_bw() + 
+    # This ensures that the image leaves some space at the edges
+    theme(plot.margin = margin(t=1.5, l=1.5, r=1, b=1, unit = "cm"), axis.line = element_blank(),
+          panel.border = element_blank(), panel.grid = element_blank(), panel.ontop = element_blank()) 
+# + border(color = "black", size = 2, linetype = NULL)
+
+
+g_f = ggarrange(ggarrange(im_A, g_fund_pub_bar, labels = c("a", ""), ncol=2, font.label=list(color="black",size=30, face = "bold")),
+                g_mem_att_dec_per, 
+                labels = c("", ""), 
+                font.label=list(color="black",size=30, face = "bold"),
+                nrow = 2)
+g_f
+ggsave(paste0("Plots/full_figure_affective_research.png"), g_f, height = 17, width = 26)
+ggsave(paste0("Plots/full_figure_affective_research.jpg"), g_f, height = 17, width = 26)
+ggsave(paste0("Plots/full_figure_affective_research.pdf"), g_f, height = 17, width = 26)
+```
+
+### combine  plots full
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+# 
+# library(ggpubr)
+# library(png)
+# library(jpeg)
+# 
+# # img1 <- readJPEG("Plots/conceptual.jpg")
+# img1 <- readPNG("Plots/conceptual_border.png")
+# 
+# im_A <- ggplot() + 
+#     background_image(img1) +
+#     # This ensures that the image leaves some space at the edges
+#     theme(plot.margin = margin(t=1.5, l=1.5, r=1, b=1, unit = "cm")) + border(color = "black", size = 2, linetype = NULL)
+# 
+# 
+# g_f = ggarrange(ggarrange(im_A, g_fund_pub_bar, labels = c("a", ""), ncol=2, font.label=list(color="black",size=30, face = "bold")),
+#                 g_mem_att_dec_per, 
+#                 labels = c("", ""), 
+#                 font.label=list(color="black",size=30, face = "bold"),
+#                 nrow = 2)
+# g_f
+# ggsave(paste0("Plots/full_figure_affective_research_v2.png"), g_f, height = 17, width = 26)
+```
+
