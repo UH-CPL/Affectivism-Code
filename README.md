@@ -4,7 +4,7 @@ This repository contains the R scripts(Rmd) to analyze, and generate the plots f
 ## Getting Started
 #### Prerequisites
 * R and RStudio
-* Required packages: dplyr, ggplot2, scales, zoo, ggpubr, and lubridate
+* Required packages: dplyr, ggplot2, scales, zoo, ggpubr, png, jpeg,and lubridate
 #### Installing R Packages
 Packages are available on CRAN and can be installed using a simple call to ```install.packages()```:
 ```
