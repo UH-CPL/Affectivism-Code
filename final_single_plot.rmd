@@ -57,7 +57,7 @@ g_fund_bar = ggplot(df_NIMH, aes(x=year, y=fundPercentage)) +
         axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
         plot.margin = margin(t=0.8, l=1.5, r=1, b=0.3, unit = "cm"),
         plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
-  labs(x="", y="NIMH budget share", title = "Affective research funding")
+  labs(x="", y="NIMH budget share", title = "Emotion research funding")
 
 
 g_fund_bar
@@ -124,7 +124,7 @@ g_pub_bar = ggplot(df_yearly, aes(x=year, y=emoPercent)) +
         axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
         plot.margin = margin(t=0.5, l=1.5, r=1, b=0.5, unit = "cm"),
         plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
-  labs(x="", y="Publication volume share", title = "Affective content in 'Behaviour' research")+
+  labs(x="", y="Publication volume share", title = "Emotion content in 'Behaviour' research")+
   scale_y_continuous(breaks = seq(0,10, by = 2), limits = c(0,10), labels=function(x) paste0(x," %"))
 
 g_pub_bar
@@ -281,7 +281,7 @@ g_emo_mem = ggplot(emotion_memory_yearly, aes(x=year, y=emoPercent)) +
         axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
         plot.margin = margin(t=0.5, l=1.5, r=1, b=0.2, unit = "cm"),
         plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
-  labs(x="", y=expression(bold("Publication volume share")), title = "Affective content in 'Memory' research")+
+  labs(x="", y=expression(bold("Publication volume share")), title = "Emotion content in 'Memory' research")+
   scale_y_continuous(breaks = seq(0,12, by = 4), limits = c(0,12), labels=function(x) paste0(x," %"))
 
 
@@ -299,7 +299,7 @@ g_emo_att = ggplot(emotion_attention_yearly, aes(x=year, y=emoPercent)) +
         axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
         plot.margin = margin(t=0.5, l=1.5, r=1, b=0.2, unit = "cm"),
         plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
-  labs(x="", y=expression(bold("Publication volume share")), title = "Affective content in 'Attention' research")+
+  labs(x="", y=expression(bold("Publication volume share")), title = "Emotion content in 'Attention' research")+
   scale_y_continuous(breaks = seq(0,12, by = 4), limits = c(0,12), labels=function(x) paste0(x," %"))
 
 
@@ -317,7 +317,7 @@ g_emo_per = ggplot(emotion_perception_yearly, aes(x=year, y=emoPercent)) +
         axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
         plot.margin = margin(t=0.4, l=1.5, r=1, b=0.3, unit = "cm"),
         plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
-  labs(x="", y=expression(bold("Publication volume share")), title = "Affective content in 'Perception' research")+
+  labs(x="", y=expression(bold("Publication volume share")), title = "Emotion content in 'Perception' research")+
   scale_y_continuous(breaks = seq(0,7, by = 2), limits = c(0,7), labels=function(x) paste0("  ", x," %"))
 
 
@@ -335,7 +335,7 @@ g_emo_dec = ggplot(emotion_decision_yearly, aes(x=year, y=emoPercent)) +
         axis.title.x = element_text(margin=margin(t=10,r=0,b=0,l=0)),
         plot.margin = margin(t=0.4, l=1.5, r=1, b=0.3, unit = "cm"),
         plot.title = element_text(hjust = 0.5, size = 24, face="bold"))+
-  labs(x="", y=expression(bold("Publication volume share")), title = "Affective content in 'Decision-making' research")+
+  labs(x="", y=expression(bold("Publication volume share")), title = "Emotion content in 'Decision-making' research")+
   scale_y_continuous(breaks = seq(0,7, by = 2), limits = c(0,7), labels=function(x) paste0("  ", x," %"))
 
 g_emo_mem
@@ -398,28 +398,5 @@ ggsave(paste0("Plots/full_figure_affective_research.jpg"), g_f, height = 17, wid
 ggsave(paste0("Plots/full_figure_affective_research.pdf"), g_f, height = 17, width = 26)
 ```
 
-### combine  plots full
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-# 
-# library(ggpubr)
-# library(png)
-# library(jpeg)
-# 
-# # img1 <- readJPEG("Plots/conceptual.jpg")
-# img1 <- readPNG("Plots/conceptual_border.png")
-# 
-# im_A <- ggplot() + 
-#     background_image(img1) +
-#     # This ensures that the image leaves some space at the edges
-#     theme(plot.margin = margin(t=1.5, l=1.5, r=1, b=1, unit = "cm")) + border(color = "black", size = 2, linetype = NULL)
-# 
-# 
-# g_f = ggarrange(ggarrange(im_A, g_fund_pub_bar, labels = c("a", ""), ncol=2, font.label=list(color="black",size=30, face = "bold")),
-#                 g_mem_att_dec_per, 
-#                 labels = c("", ""), 
-#                 font.label=list(color="black",size=30, face = "bold"),
-#                 nrow = 2)
-# g_f
-# ggsave(paste0("Plots/full_figure_affective_research_v2.png"), g_f, height = 17, width = 26)
-```
+
 
