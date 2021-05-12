@@ -1,4 +1,4 @@
-# Affectivism-Dataset
+# Affectivism-Code
 This repository contains the R scripts(Rmd) to analyze, and generate the plots for the "Affectivism-Dataset" project.
 
 ## Getting Started
